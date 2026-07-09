@@ -36,7 +36,7 @@
         .tv-card:active { transform: scale(0.96); }
         
         .tv-thumb { width: 100%; height: 95px; background-size: cover; background-position: center; position: relative; }
-        .tv-thumb.movie-thumb { height: 230px; }
+        .tv-thumb.movie-thumb { height: 160px; }
         
         .featured-card { grid-column: span 2; margin-bottom: 5px; }
         .featured-card .tv-thumb { height: 180px; }
@@ -151,6 +151,16 @@
                     <span class="tv-meta">🔥 JAV Uncensored / HD</span>
                 </div>
             </div>
+
+            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/247684/Unknown_File?hash=AgADNR', 'mp4')">
+                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=400');">
+                    <div class="hot-badge">မြန်မာ 18+</div>
+                </div>
+                <div class="tv-info left">
+                    <h4 class="tv-title">မြန်မာ 18+</h4>
+                    <span class="tv-meta">🔥 Local Leak / Exclusive</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -205,7 +215,6 @@
                         livePlayer.play(); 
                     }
                 } else if (type === 'mp4') {
-                    // MP4 တိုက်ရိုက်လင့်ခ်အတွက် Hls ကိုဖျက်ပြီး သီးသန့် Direct ဖွင့်ပေးခြင်း
                     if (hls) { hls.destroy(); hls = null; }
                     livePlayer.src = url;
                     livePlayer.play();
