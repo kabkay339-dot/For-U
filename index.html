@@ -142,7 +142,7 @@
 
     <div id="adult-sec" class="app-section">
         <div class="tv-grid">
-            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/248721/ipzz+037.mp4?hash=AgADSg', 'hls')">
+            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/248721/ipzz+037.mp4?hash=AgADSg', 'mp4')">
                 <div class="tv-thumb movie-thumb" style="background-image: url('https://images.wsrv.nl/?url=https://i.ibb.co/6wD6HhN/IMG-20260709-190210.jpg');">
                     <div class="hot-badge">18+ HOT</div>
                 </div>
@@ -189,18 +189,26 @@
                 ytPlayer.src = url;
                 ytPlayer.style.display = 'block';
                 livePlayer.style.display = 'none';
-            } else if (type === 'hls') {
+            } else {
                 ytPlayer.style.display = 'none';
                 livePlayer.style.display = 'block';
-                if (Hls.isSupported()) {
-                    if (hls) { hls.destroy(); }
-                    hls = new Hls();
-                    hls.loadSource(url);
-                    hls.attachMedia(livePlayer);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() { livePlayer.play(); });
-                } else { 
-                    livePlayer.src = url; 
-                    livePlayer.play(); 
+                
+                if (type === 'hls') {
+                    if (Hls.isSupported()) {
+                        if (hls) { hls.destroy(); }
+                        hls = new Hls();
+                        hls.loadSource(url);
+                        hls.attachMedia(livePlayer);
+                        hls.on(Hls.Events.MANIFEST_PARSED, function() { livePlayer.play(); });
+                    } else { 
+                        livePlayer.src = url; 
+                        livePlayer.play(); 
+                    }
+                } else if (type === 'mp4') {
+                    // MP4 တိုက်ရိုက်လင့်ခ်အတွက် Hls ကိုဖျက်ပြီး သီးသန့် Direct ဖွင့်ပေးခြင်း
+                    if (hls) { hls.destroy(); hls = null; }
+                    livePlayer.src = url;
+                    livePlayer.play();
                 }
             }
             window.history.pushState({ popup: "open" }, "");
