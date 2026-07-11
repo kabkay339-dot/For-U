@@ -17,13 +17,27 @@
         .app-section.active { display: block; }
 
         /* Styles for Cards */
-        .outline-card { background: #1e293b; border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .outline-card { background: #1e293b; border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); border-left: 5px solid #38bdf8; }
+        .outline-card.uk { border-left: 5px solid #ef4444; }
+        .outline-card.fr { border-left: 5px solid #f59e0b; }
+        
         .tv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .tv-card { background: #111827; border-radius: 14px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; position: relative; }
-        .tv-thumb { width: 100%; height: 160px; background-size: cover; background-position: center; position: relative; }
-        .tv-info { padding: 12px; text-align: left; }
-        .tv-title { font-size: 13px; font-weight: bold; margin: 0; color: #ffffff; }
+        .tv-card.featured-card { grid-column: span 2; margin-bottom: 5px; }
+        .tv-card.featured-card .tv-thumb { height: 180px; }
+        
+        .tv-thumb { width: 100%; height: 95px; background-size: cover; background-position: center; position: relative; }
+        .tv-thumb.movie-thumb { height: 160px; }
+        
+        .tv-info { padding: 10px; text-align: center; background: #111827; }
+        .tv-info.left { text-align: left; padding: 12px; }
+        
+        .tv-title { font-size: 13px; font-weight: bold; margin: 0; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tv-meta { font-size: 11px; color: #ff453a; font-weight: 500; margin-top: 4px; display: block; }
+        
+        /* Badges */
+        .live-badge { position: absolute; top: 8px; left: 8px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
+        .hl-badge { position: absolute; top: 8px; left: 8px; background: #38bdf8; color: white; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
         
         .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; }
         .modal-content { width: 100%; height: 100%; max-width: 800px; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -42,46 +56,104 @@
 
     <!-- 1. Outline Section -->
     <div id="outline-sec" class="app-section active">
+        <!-- US Server -->
         <div class="outline-card">
-            <div class="tv-title">🇺🇸 US Server</div>
-            <div style="font-family: monospace; font-size: 12px; padding: 10px; background: #000;">ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrR0dVSkc3Q3lPSTcyLjI0NS4yMzUuODQ6MjM3NSNfVW5pdGVkIFN0YXRlcy0jMzc2NTYtLSUwVXRsaW5lS2V5cy5jb20=</div>
+            <div class="tv-title" style="color: #38bdf8; margin-bottom: 8px;">🇺🇸 US Server</div>
+            <div style="font-family: monospace; font-size: 11px; padding: 12px; background: #0b0f19; border-radius: 8px; word-break: break-all; color: #cbd5e1;">ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrR0dVSkc3Q3lPSTcyLjI0NS4yMzUuODQ6MjM3NSNfVW5pdGVkIFN0YXRlcy0jMzc2NTYtLSUwVXRsaW5lS2V5cy5jb20=</div>
+        </div>
+        <!-- UK Server -->
+        <div class="outline-card uk">
+            <div class="tv-title" style="color: #f43f5e; margin-bottom: 8px;">🇬🇧 UK Server</div>
+            <div style="font-family: monospace; font-size: 11px; padding: 12px; background: #0b0f19; border-radius: 8px; word-break: break-all; color: #cbd5e1;">ss://Y2hhaGNoYVkyYXRhaWV0Zi1wb2x5MTMwNTF0WVNidU3U2hXVFdjdX15bm1MRVgxV3JcUFZrOTEwRWxlZzMiOWRQU2NjMWJWNVVjMTZjaHByWHVWV3FTcWUzTzNGNGR2REZjN1V3RjZVcjdvZVZQMDZmVjQmdXVFQDE4NS41LjM4Ljg5OjU3MzI3I1VuaXRlZCBLaW5nZG9tLSMzNzg2My0lMFV0bGluZUtleXMuY29t</div>
+        </div>
+        <!-- France Server -->
+        <div class="outline-card fr">
+            <div class="tv-title" style="color: #fbbf24; margin-bottom: 8px;">🇫🇷 France Server</div>
+            <div style="font-family: monospace; font-size: 11px; padding: 12px; background: #0b0f19; border-radius: 8px; word-break: break-all; color: #cbd5e1;">ss://Y2hhaGNoYVkyYXRhaWV0Zi1wb2x5MTMwNTp5VGIxaUx3Vm5abW53OXByVnFIVTExQDEzNS4xMjUuMjM5LjUxOjE5ODM0I0ZyYW5jZS0jMzc4NTQtLSUwVXRsaW5lS2V5cy5jb20=</div>
         </div>
     </div>
 
     <!-- 2. Highlights Section -->
     <div id="highlights-sec" class="app-section">
-        <div class="tv-card" onclick="openMedia('https://www.youtube.com/embed/F-n62fQa0Fg', 'youtube')">
-            <div class="tv-thumb" style="background-image: url('https://img.youtube.com/vi/F-n62fQa0Fg/hqdefault.jpg');"></div>
-            <div class="tv-info"><h4 class="tv-title">Football Highlights</h4></div>
+        <div class="tv-card featured-card" onclick="openMedia('https://www.youtube.com/embed/F-n62fQa0Fg?autoplay=1', 'youtube')">
+            <div class="tv-thumb" style="background-image: url('https://img.youtube.com/vi/F-n62fQa0Fg/maxresdefault.jpg');">
+                <div class="hl-badge">HIGHLIGHTS</div>
+            </div>
+            <div class="tv-info"><h4 class="tv-title" style="white-space: normal;">Football Highlights</h4></div>
         </div>
     </div>
 
-    <!-- 3. Live TV Section -->
+    <!-- 3. Live TV Section (တီဗီလိုင်း ၁表 လိုင်းအားလုံး မူရင်းအတိုင်း ပြန်လည်ထည့်သွင်းပေးထားပါသည်) -->
     <div id="livetv-sec" class="app-section">
         <div class="tv-grid">
             <div class="tv-card" onclick="openMedia('http://103.215.194.93:8282/hls/fortunetv/vmix.m3u8', 'hls')">
-                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=400');"></div>
-                <div class="tv-info"><h4 class="tv-title">Fortune TV</h4></div>
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">fortune</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('https://mrtvott.com/cache/MRTV-Ent-HD/master.m3u8', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">mrtv entertainment</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('https://server.zillarbarta.com/zbcatun/video.m3u8', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">zbcatun cartoon</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('https://d3s7x6kmqcnb6b.cloudfront.net/d/distro001a/D6NOXKW7TYP8TG7YMYZH/hls3/now,-1m/m.m3u8?ads.vf=yqk-v2F2pNi', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">cartoon classic Poland</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('http://tv.balkanweb.com:8081/news24/livestream/playlist.m3u8', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">news 24</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('https://live.france24.com/hls/live/2037179-b/F24_FR_HI_HLS/master_500.m3u8', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">France 24</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bloomberg-television/bloombergtv.m3u8?ads.vf=XfUcpFmGLda', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">Bloomberg TV</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('http://74.91.26.218:82/live/cctv4hd.m3u8', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">CCTV 4</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('https://d382r3rgbxdixq.cloudfront.net/scheduler/scheduleMaster/418.m3u8', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">cricket TV</h4></div>
+            </div>
+            <div class="tv-card" onclick="openMedia('https://bein-xtra-xumo.amagi.tv/playlist.m3u8', 'hls')">
+                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=400');"><div class="live-badge">LIVE</div></div>
+                <div class="tv-info"><h4 class="tv-title">bein sports xtra</h4></div>
             </div>
         </div>
     </div>
 
-    <!-- 4. 18+ Movies Section (အသစ်ရလာတဲ့ Telegram Public Link နှင့် ကားဟောင်းကို ပေါင်းထားသည်) -->
+    <!-- 4. 18+ Movies Section -->
     <div id="adult-sec" class="app-section">
         <div class="tv-grid">
-            <!-- 🎬 ကတ်ပြား ၁ - လူကြီးမင်းအသစ်ပေးသော Telegram Public Link (ခေါင်းစဉ်အမှန်ပြင်ပြီး) -->
+            <!-- Telegram Public Stream Link -->
             <div class="tv-card" onclick="openMedia('https://t.me/embed/porn_1879/2?userpic=false', 'telegram')">
-                <div class="tv-thumb" style="background-image: url('https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=400');"></div>
-                <div class="tv-info">
+                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=400');"></div>
+                <div class="tv-info left">
                     <h4 class="tv-title">မြန်မာ 18+ Exclusive</h4>
                     <span class="tv-meta">🔥 Telegram Stream</span>
                 </div>
             </div>
+
+            <!-- မြန်မာ 18+ (Unknown File MP4 လင့်ခ်) -->
+            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/247684/Unknown_File?hash=AgADNR', 'mp4')">
+                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400');"></div>
+                <div class="tv-info left">
+                    <h4 class="tv-title">မြန်မာ 18+ New</h4>
+                    <span class="tv-meta">🔥 Local Leak / MP4</span>
+                </div>
+            </div>
             
-            <!-- 🎬 ကတ်ပြား ၂ - IPZZ-037 Movie (MP4) -->
+            <!-- IPZZ-037 Movie (MP4) -->
             <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/248721/ipzz+037.mp4?hash=AgADSg', 'mp4')">
-                <div class="tv-thumb" style="background-image: url('https://images.wsrv.nl/?url=https://i.ibb.co/6wD6HhN/IMG-20260709-190210.jpg');"></div>
-                <div class="tv-info">
+                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.wsrv.nl/?url=https://i.ibb.co/6wD6HhN/IMG-20260709-190210.jpg');"></div>
+                <div class="tv-info left">
                     <h4 class="tv-title">IPZZ-037 Hot</h4>
                     <span class="tv-meta">🔥 JAV Uncensored</span>
                 </div>
@@ -93,7 +165,7 @@
     <div id="videoModal" class="video-modal">
         <span class="close-btn" onclick="closeMedia()">✕</span>
         <div class="modal-content">
-            <iframe id="iframePlayer"></iframe>
+            <iframe id="iframePlayer" allowfullscreen></iframe>
             <video id="nativePlayer" controls playsinline></video>
         </div>
     </div>
