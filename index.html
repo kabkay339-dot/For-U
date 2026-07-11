@@ -1,91 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 💡 HTTP လင့်ခ်တွေကို HTTPS အဖြစ် အလိုအလျောက် ပြောင်းလဲဖတ်ပေးရန် Meta Tag ထည့်သွင်းခြင်း -->
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Premium Movies Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body { background-color: #0b0f19; color: #ffffff; font-family: -apple-system, sans-serif; padding: 15px; margin: 0; padding-bottom: 50px; }
         
-        /* 📱 Navigation Tabs */
         .tab-container { display: flex; overflow-x: auto; white-space: nowrap; background-color: #111827; padding: 10px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); gap: 10px; -webkit-overflow-scrolling: touch; }
         .tab-container::-webkit-scrollbar { display: none; }
+        
         .tab-btn { background: none; border: none; color: #94a3b8; padding: 8px 16px; font-size: 14px; font-weight: bold; border-radius: 20px; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background-color: #1e293b; color: #38bdf8; box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2); }
         .tab-btn.tab-18plus.active { color: #ff453a; box-shadow: inset 0 0 0 1px rgba(255, 69, 58, 0.3); }
-
+        
         .app-section { display: none; }
         .app-section.active { display: block; }
 
-        /* Styles for Cards */
-        .outline-card { background: #1e293b; border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); border-left: 5px solid #38bdf8; }
+        .outline-card { background: #1e293b; border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .outline-card.us { border-left: 5px solid #38bdf8; }
         .outline-card.uk { border-left: 5px solid #ef4444; }
         .outline-card.fr { border-left: 5px solid #f59e0b; }
         
+        .card-title { font-size: 16px; font-weight: bold; display: flex; align-items: center; gap: 8px; margin-top: 0; margin-bottom: 15px; }
+        .card-title.us { color: #38bdf8; }
+        .card-title.uk { color: #f43f5e; }
+        .card-title.fr { color: #fbbf24; }
+        
+        .key-box { background: #0b0f19; border-radius: 8px; padding: 15px; font-family: monospace; font-size: 12px; color: #cbd5e1; word-break: break-all; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px; user-select: all; }
+        .copy-hint { font-size: 12px; color: #64748b; }
+
         .tv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .tv-card { background: #111827; border-radius: 14px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; position: relative; }
-        .tv-card.featured-card { grid-column: span 2; margin-bottom: 5px; }
-        .tv-card.featured-card .tv-thumb { height: 180px; }
+        .tv-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 14px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; }
+        .tv-card:active { transform: scale(0.96); }
         
         .tv-thumb { width: 100%; height: 95px; background-size: cover; background-position: center; position: relative; }
         .tv-thumb.movie-thumb { height: 160px; }
         
-        .tv-info { padding: 10px; text-align: center; background: #111827; }
-        .tv-info.left { text-align: left; padding: 12px; }
+        .featured-card { grid-column: span 2; margin-bottom: 5px; }
+        .featured-card .tv-thumb { height: 180px; }
         
-        .tv-title { font-size: 13px; font-weight: bold; margin: 0; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tv-meta { font-size: 11px; color: #ff453a; font-weight: 500; margin-top: 4px; display: block; }
-        
-        /* Badges */
         .live-badge { position: absolute; top: 8px; left: 8px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
         .hl-badge { position: absolute; top: 8px; left: 8px; background: #38bdf8; color: white; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
+        .hot-badge { position: absolute; top: 8px; left: 8px; background: #ff453a; color: white; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
         
+        .tv-info { padding: 10px; text-align: center; background: #111827; }
+        .tv-info.left { text-align: left; padding: 12px; }
+        .tv-title { font-size: 13px; font-weight: bold; margin: 0; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tv-meta { font-size: 11px; color: #ff453a; font-weight: 500; margin-top: 4px; display: block; }
+
         .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; }
-        .modal-content { width: 100%; height: 100%; max-width: 800px; display: flex; align-items: center; justify-content: center; position: relative; }
-        iframe, video { width: 100%; height: 100%; border: none; display: none; background: #000; }
-        .close-btn { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 35px; cursor: pointer; z-index: 10000; }
+        .modal-content { width: 100%; max-width: 700px; padding: 10px; box-sizing: border-box; position: relative; }
+        video, iframe { width: 100%; height: 230px; border-radius: 8px; background-color: #000; border: 0; display: none; }
+        @media (min-width: 600px) { video, iframe { height: 380px; } }
+        .close-btn { position: absolute; top: -35px; right: 10px; color: #fff; font-size: 30px; cursor: pointer; border: none; background: none; }
     </style>
 </head>
 <body>
 
     <div class="tab-container">
-        <button class="tab-btn active" onclick="switchSection('outline-sec', this)">Daily Keys</button>
-        <button class="tab-btn" onclick="switchSection('highlights-sec', this)">Highlights</button>
+        <button class="tab-btn active" onclick="switchSection('outline-sec', this)">Daily outline keys</button>
+        <button class="tab-btn" onclick="switchSection('highlights-sec', this)">Football Highlights</button>
         <button class="tab-btn" onclick="switchSection('livetv-sec', this)">Live TV</button>
         <button class="tab-btn tab-18plus" onclick="switchSection('adult-sec', this)">🔞 18+ Movies</button>
     </div>
 
-    <!-- 1. Outline Section -->
     <div id="outline-sec" class="app-section active">
-        <!-- US Server -->
-        <div class="outline-card">
-            <div class="tv-title" style="color: #38bdf8; margin-bottom: 8px;">🇺🇸 US Server</div>
-            <div style="font-family: monospace; font-size: 11px; padding: 12px; background: #0b0f19; border-radius: 8px; word-break: break-all; color: #cbd5e1;">ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrR0dVSkc3Q3lPSTcyLjI0NS4yMzUuODQ6MjM3NSNfVW5pdGVkIFN0YXRlcy0jMzc2NTYtLSUwVXRsaW5lS2V5cy5jb20=</div>
+        <div class="outline-card us">
+            <div class="card-title us">🇺🇸 United States Server</div>
+            <div class="key-box">ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrR0dVSkc3Q3lPSTcyLjI0NS4yMzUuODQ6MjM3NSNfVW5pdGVkIFN0YXRlcy0jMzc2NTYtLSUwVXRsaW5lS2V5cy5jb20=</div>
+            <div class="copy-hint">💡 စာသားကို ကြာကြာဖိပြီး Copy ကူးယူပါ။</div>
         </div>
-        <!-- UK Server -->
         <div class="outline-card uk">
-            <div class="tv-title" style="color: #f43f5e; margin-bottom: 8px;">🇬🇧 UK Server</div>
-            <div style="font-family: monospace; font-size: 11px; padding: 12px; background: #0b0f19; border-radius: 8px; word-break: break-all; color: #cbd5e1;">ss://Y2hhaGNoYVkyYXRhaWV0Zi1wb2x5MTMwNTF0WVNidU3U2hXVFdjdX15bm1MRVgxV3JcUFZrOTEwRWxlZzMiOWRQU2NjMWJWNVVjMTZjaHByWHVWV3FTcWUzTzNGNGR2REZjN1V3RjZVcjdvZVZQMDZmVjQmdXVFQDE4NS41LjM4Ljg5OjU3MzI3I1VuaXRlZCBLaW5nZG9tLSMzNzg2My0lMFV0bGluZUtleXMuY29t</div>
+            <div class="card-title uk">🇬🇧 United Kingdom Server</div>
+            <div class="key-box">ss://Y2hhaGNoYVkyYXRhaWV0Zi1wb2x5MTMwNTF0WVNidU3U2hXVFdjdX15bm1MRVgxV3JcUFZrOTEwRWxlZzMiOWRQU2NjMWJWNVVjMTZjaHByWHVWV3FTcWUzTzNGNGR2REZjN1V3RjZVcjdvZVZQMDZmVjQmdXVFQDE4NS41LjM4Ljg5OjU3MzI3I1VuaXRlZCBLaW5nZG9tLSMzNzg2My0lMFV0bGluZUtleXMuY29t</div>
+            <div class="copy-hint">💡 စာသားကို ကြာကြာဖိပြီး Copy ကူးယူပါ။</div>
         </div>
-        <!-- France Server -->
         <div class="outline-card fr">
-            <div class="tv-title" style="color: #fbbf24; margin-bottom: 8px;">🇫🇷 France Server</div>
-            <div style="font-family: monospace; font-size: 11px; padding: 12px; background: #0b0f19; border-radius: 8px; word-break: break-all; color: #cbd5e1;">ss://Y2hhaGNoYVkyYXRhaWV0Zi1wb2x5MTMwNTp5VGIxaUx3Vm5abW53OXByVnFIVTExQDEzNS4xMjUuMjM5LjUxOjE5ODM0I0ZyYW5jZS0jMzc4NTQtLSUwVXRsaW5lS2V5cy5jb20=</div>
+            <div class="card-title fr">🇫🇷 France Server</div>
+            <div class="key-box">ss://Y2hhaGNoYVkyYXRhaWV0Zi1wb2x5MTMwNTp5VGIxaUx3Vm5abW53OXByVnFIVTExQDEzNS4xMjUuMjM5LjUxOjE5ODM0I0ZyYW5jZS0jMzc4NTQtLSUwVXRsaW5lS2V5cy5jb20=</div>
+            <div class="copy-hint">💡 စာသားကို ကြာကြာဖိပြီး Copy ကူးယူပါ။</div>
         </div>
     </div>
 
-    <!-- 2. Highlights Section -->
     <div id="highlights-sec" class="app-section">
-        <div class="tv-card featured-card" onclick="openMedia('https://www.youtube.com/embed/F-n62fQa0Fg?autoplay=1', 'youtube')">
+        <div class="tv-card featured-card" onclick="openMedia('https://www.youtube.com/embed/F-n62fQa0Fg?autoplay=1&rel=0&fs=1', 'youtube')">
             <div class="tv-thumb" style="background-image: url('https://img.youtube.com/vi/F-n62fQa0Fg/maxresdefault.jpg');">
                 <div class="hl-badge">HIGHLIGHTS</div>
             </div>
-            <div class="tv-info"><h4 class="tv-title" style="white-space: normal;">Football Highlights</h4></div>
+            <div class="tv-info">
+                <h4 class="tv-title" style="white-space: normal;">Football Highlights</h4>
+            </div>
         </div>
     </div>
 
-    <!-- 3. Live TV Section -->
     <div id="livetv-sec" class="app-section">
         <div class="tv-grid">
             <div class="tv-card" onclick="openMedia('http://103.215.194.93:8282/hls/fortunetv/vmix.m3u8', 'hls')">
@@ -131,90 +140,100 @@
         </div>
     </div>
 
-    <!-- 4. 18+ Movies Section -->
     <div id="adult-sec" class="app-section">
         <div class="tv-grid">
-            <!-- Telegram Public Stream Link -->
-            <div class="tv-card" onclick="openMedia('https://t.me/embed/porn_1879/2?userpic=false', 'telegram')">
-                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=400');"></div>
+            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/248721/ipzz+037.mp4?hash=AgADSg', 'mp4')">
+                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.wsrv.nl/?url=https://i.ibb.co/6wD6HhN/IMG-20260709-190210.jpg');">
+                    <div class="hot-badge">18+ HOT</div>
+                </div>
                 <div class="tv-info left">
-                    <h4 class="tv-title">မြန်မာ 18+ Exclusive</h4>
-                    <span class="tv-meta">🔥 Telegram Stream</span>
+                    <h4 class="tv-title">IPZZ-037 Exclusive</h4>
+                    <span class="tv-meta">🔥 JAV Uncensored / HD</span>
                 </div>
             </div>
 
-            <!-- မြန်မာ 18+ (Unknown File MP4 လင့်ခ်) -->
-            <div class="tv-card" onclick="openMedia('https://file-to-link-stevebotz-01.koyeb.app/247684/Unknown_File?hash=AgADNR', 'mp4')">
-                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400');"></div>
-                <div class="tv-info left">
-                    <h4 class="tv-title">မြန်မာ 18+ New</h4>
-                    <span class="tv-meta">🔥 Local Leak / MP4</span>
+            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/247684/Unknown_File?hash=AgADNR', 'mp4')">
+                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=400');">
+                    <div class="hot-badge">မြန်မာ 18+</div>
                 </div>
-            </div>
-            
-            <!-- IPZZ-037 Movie (MP4) -->
-            <div class="tv-card" onclick="openMedia('https://file-to-link-stevebotz-01.koyeb.app/248721/ipzz+037.mp4?hash=AgADSg', 'mp4')">
-                <div class="tv-thumb movie-thumb" style="background-image: url('https://images.wsrv.nl/?url=https://i.ibb.co/6wD6HhN/IMG-20260709-190210.jpg');"></div>
                 <div class="tv-info left">
-                    <h4 class="tv-title">IPZZ-037 Hot</h4>
-                    <span class="tv-meta">🔥 JAV Uncensored</span>
+                    <h4 class="tv-title">မြန်မာ 18+</h4>
+                    <span class="tv-meta">🔥 Local Leak / Exclusive</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Video Modal -->
     <div id="videoModal" class="video-modal">
-        <span class="close-btn" onclick="closeMedia()">✕</span>
         <div class="modal-content">
-            <iframe id="iframePlayer" allowfullscreen></iframe>
-            <video id="nativePlayer" controls playsinline></video>
+            <button class="close-btn" onclick="closeMedia()">×</button>
+            <iframe id="ytPlayer" allowfullscreen allow="autoplay"></iframe>
+            <video id="livePlayer" controls autoplay playsinline></video>
         </div>
     </div>
 
     <script>
         var hls = null;
-        function switchSection(id, btn) {
-            document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            btn.classList.add('active');
+
+        function switchSection(sectionId, button) {
+            var sections = document.getElementsByClassName('app-section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            document.getElementById(sectionId).classList.add('active');
+            
+            var tabs = document.getElementsByClassName('tab-btn');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            button.classList.add('active');
         }
 
         function openMedia(url, type) {
             var modal = document.getElementById('videoModal');
-            var iframe = document.getElementById('iframePlayer');
-            var video = document.getElementById('nativePlayer');
+            var ytPlayer = document.getElementById('ytPlayer');
+            var livePlayer = document.getElementById('livePlayer');
             modal.style.display = 'flex';
-            
-            if (type === 'youtube' || type === 'telegram') {
-                video.style.display = 'none'; iframe.style.display = 'block';
-                iframe.src = url;
-            } else if (type === 'mp4') {
-                iframe.style.display = 'none'; video.style.display = 'block';
-                // 💡 လင့်ခ်ထဲက http ကို https သို့ Force ပြောင်းပြီးမှ Player ထဲထည့်ခြင်း
-                var secureUrl = url.replace("http://", "https://");
-                video.src = secureUrl; 
-                video.load();
-                video.play().catch(function(e) { console.log("Playback error: ", e); });
-            } else if (type === 'hls') {
-                iframe.style.display = 'none'; video.style.display = 'block';
-                if (hls) hls.destroy();
-                hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+
+            if (type === 'youtube') {
+                ytPlayer.src = url;
+                ytPlayer.style.display = 'block';
+                livePlayer.style.display = 'none';
+            } else {
+                ytPlayer.style.display = 'none';
+                livePlayer.style.display = 'block';
+                
+                if (type === 'hls') {
+                    if (Hls.isSupported()) {
+                        if (hls) { hls.destroy(); }
+                        hls = new Hls();
+                        hls.loadSource(url);
+                        hls.attachMedia(livePlayer);
+                        hls.on(Hls.Events.MANIFEST_PARSED, function() { livePlayer.play(); });
+                    } else { 
+                        livePlayer.src = url; 
+                        livePlayer.play(); 
+                    }
+                } else if (type === 'mp4') {
+                    if (hls) { hls.destroy(); hls = null; }
+                    livePlayer.src = url;
+                    livePlayer.play();
+                }
             }
+            window.history.pushState({ popup: "open" }, "");
         }
 
         function closeMedia() {
             var modal = document.getElementById('videoModal');
-            document.getElementById('iframePlayer').src = "";
-            document.getElementById('nativePlayer').pause();
-            document.getElementById('nativePlayer').src = "";
-            if(hls) { hls.destroy(); hls = null; }
+            var ytPlayer = document.getElementById('ytPlayer');
+            var livePlayer = document.getElementById('livePlayer');
+            ytPlayer.src = "";
+            livePlayer.pause(); 
+            livePlayer.src = "";
+            if (hls) { hls.stopLoad(); hls.detachMedia(); hls.destroy(); hls = null; }
             modal.style.display = 'none';
         }
+        window.onpopstate = function() { closeMedia(); };
     </script>
 </body>
 </html>
