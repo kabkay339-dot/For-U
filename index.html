@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 💡 HTTP လင့်ခ်တွေကို HTTPS အဖြစ် အလိုအလျောက် ပြောင်းလဲဖတ်ပေးရန် Meta Tag ထည့်သွင်းခြင်း -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body { background-color: #0b0f19; color: #ffffff; font-family: -apple-system, sans-serif; padding: 15px; margin: 0; padding-bottom: 50px; }
@@ -83,7 +85,7 @@
         </div>
     </div>
 
-    <!-- 3. Live TV Section (တီဗီလိုင်း ၁表 လိုင်းအားလုံး မူရင်းအတိုင်း ပြန်လည်ထည့်သွင်းပေးထားပါသည်) -->
+    <!-- 3. Live TV Section -->
     <div id="livetv-sec" class="app-section">
         <div class="tv-grid">
             <div class="tv-card" onclick="openMedia('http://103.215.194.93:8282/hls/fortunetv/vmix.m3u8', 'hls')">
@@ -142,7 +144,7 @@
             </div>
 
             <!-- မြန်မာ 18+ (Unknown File MP4 လင့်ခ်) -->
-            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/247684/Unknown_File?hash=AgADNR', 'mp4')">
+            <div class="tv-card" onclick="openMedia('https://file-to-link-stevebotz-01.koyeb.app/247684/Unknown_File?hash=AgADNR', 'mp4')">
                 <div class="tv-thumb movie-thumb" style="background-image: url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400');"></div>
                 <div class="tv-info left">
                     <h4 class="tv-title">မြန်မာ 18+ New</h4>
@@ -151,7 +153,7 @@
             </div>
             
             <!-- IPZZ-037 Movie (MP4) -->
-            <div class="tv-card" onclick="openMedia('http://file-to-link-stevebotz-01.koyeb.app/248721/ipzz+037.mp4?hash=AgADSg', 'mp4')">
+            <div class="tv-card" onclick="openMedia('https://file-to-link-stevebotz-01.koyeb.app/248721/ipzz+037.mp4?hash=AgADSg', 'mp4')">
                 <div class="tv-thumb movie-thumb" style="background-image: url('https://images.wsrv.nl/?url=https://i.ibb.co/6wD6HhN/IMG-20260709-190210.jpg');"></div>
                 <div class="tv-info left">
                     <h4 class="tv-title">IPZZ-037 Hot</h4>
@@ -190,7 +192,11 @@
                 iframe.src = url;
             } else if (type === 'mp4') {
                 iframe.style.display = 'none'; video.style.display = 'block';
-                video.src = url; video.play();
+                // 💡 လင့်ခ်ထဲက http ကို https သို့ Force ပြောင်းပြီးမှ Player ထဲထည့်ခြင်း
+                var secureUrl = url.replace("http://", "https://");
+                video.src = secureUrl; 
+                video.load();
+                video.play().catch(function(e) { console.log("Playback error: ", e); });
             } else if (type === 'hls') {
                 iframe.style.display = 'none'; video.style.display = 'block';
                 if (hls) hls.destroy();
